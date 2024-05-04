@@ -6,19 +6,18 @@ import path from "path";
 const app = express();
 const port = 3000;
 import { filesFromPaths } from "files-from-path";
-import { log } from "console";
+import dotenv from "dotenv";
 
+dotenv.config();
 app.use(express.json());
 
 (async () => {
   const client = await create();
 
-  const space = await client.createSpace("mitsunn");
+  // const space = await client.createSpace("mitsunn");
 
-  const myAccount = await client.login("mark.meguizo@gmail.com");
-  await client.setCurrentSpace(
-    "did:key:z6MkeYPCtS63hQ2DaknZ4vTcb63F8izkupgXKy8DdhvXdq8k"
-  );
+  const myAccount = await client.login(process.env.email);
+  await client.setCurrentSpace(process.env.DID);
   // await myAccount.provision(space.did());
 
   // await space.save();
