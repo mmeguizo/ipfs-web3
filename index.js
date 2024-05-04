@@ -14,19 +14,8 @@ app.use(express.json());
 (async () => {
   const client = await create();
 
-  // const space = await client.createSpace("mitsunn");
-
   const myAccount = await client.login(process.env.email);
   await client.setCurrentSpace(process.env.DID);
-  // await myAccount.provision(space.did());
-
-  // await space.save();
-
-  // const recovery = await space.createRecovery(myAccount.did());
-  // await client.capability.access.delegate({
-  //   space: space.did(),
-  //   delegations: [recovery],
-  // });
 
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -44,20 +33,10 @@ app.use(express.json());
   });
 
   app.post("/upload", upload.single("file"), async (req, res, next) => {
-    console.log({ filepath: req.file });
-
     const files = await filesFromPaths([req.file.path, req.file.destination]);
-    console.log(files);
-    // console.log({ filepath: req.file });
-    // const fileData = fs.readFileSync(path.resolve(req.file.path));
-    // console.log(fileData);
-    // const files = [new File([fileData], req.file.originalname)];
-    // console.log(files);
     const directoryCid = await client.uploadDirectory(files);
-    console.log(directoryCid);
     let data = `${directoryCid}.ipfs.w3s.link/?filename=${req.file.originalname}`;
     res.send({ data: data });
-    // res.send({ directoryCid });
   });
 
   app.get("/", (req, res) => {
